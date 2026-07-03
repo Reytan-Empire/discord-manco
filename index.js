@@ -25,7 +25,7 @@ async function checkServer() {
     const data = await res.json();
     const channel = await client.channels.fetch(CHANNEL_ID);
 
-    if (data.online === true) {
+    if (data.online) {
       if (data.players.online > 0 && lastStatus !== "online") {
         channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
         lastStatus = "online";
@@ -61,13 +61,13 @@ client.on('messageCreate', async message => {
       const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_IP}:${SERVER_PORT}`);
       const data = await res.json();
 
-      if (data.online === true && data.players.online > 0) {
+      if (data.online && data.players.online > 0) {
         if (data.players.list && data.players.list.length > 0) {
           message.reply(`👥 Jugadores conectados (${data.players.online}): ${data.players.list.map(p => p.name).join(', ')}`);
         } else {
           message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
         }
-      } else if (data.online === false) {
+      } else if (!data.online) {
         message.reply(`❌ El servidor está apagado.`);
       }
       // Online con 0 jugadores → no responder nada
