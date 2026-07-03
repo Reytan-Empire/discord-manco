@@ -16,7 +16,7 @@ const client = new Client({
     GatewayIntentBits.MessageContent,
     GatewayIntentBits.DirectMessages
   ],
-  partials: [Partials.Channel] // necesario para DMs
+  partials: [Partials.Channel]
 });
 
 let lastStatus = null; // Guardamos el estado anterior
@@ -28,15 +28,17 @@ async function checkServer() {
     const data = await res.json();
     const channel = await client.channels.fetch(CHANNEL_ID);
 
-    // Solo avisar si está online y hay jugadores
+    // ✅ Solo avisar si está online y hay jugadores
     if (data.online && data.players.online > 0 && lastStatus !== "online") {
       channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
       lastStatus = "online";
-    } else if (!data.online && lastStatus !== "offline") {
+    } 
+    // ✅ Avisar si está apagado
+    else if (!data.online && lastStatus !== "offline") {
       channel.send("@everyone ❌ El servidor se apagó.");
       lastStatus = "offline";
     }
-    // Si está online pero con 0 jugadores, no manda nada
+    // ❌ Si está online con 0 jugadores → no manda nada
   } catch (err) {
     console.error("Error al consultar mcstatus.io:", err);
   }
@@ -70,7 +72,8 @@ client.on('messageCreate', async message => {
           message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
         }
       } else if (data.online && data.players.online === 0) {
-        message.reply(`👥 El servidor está en línea pero no hay jugadores conectados.`);
+        // ❌ No responder nada si está online con 0 jugadores
+        return;
       } else {
         message.reply(`❌ El servidor está apagado.`);
       }
