@@ -34,7 +34,7 @@ async function checkServer() {
         lastStatus = "online";
       }
       // Online con 0 jugadores → no mandar nada
-    } else {
+    } else if (data.online === false) {
       // Offline real
       if (lastStatus !== "offline") {
         channel.send("@everyone ❌ El servidor se apagó.");
@@ -72,9 +72,8 @@ client.on('messageCreate', async message => {
           } else {
             message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
           }
-        } else {
-          // Online con 0 jugadores → no responder nada
         }
+        // Online con 0 jugadores → no responder nada
       } else {
         message.reply(`❌ El servidor está apagado.`);
       }
