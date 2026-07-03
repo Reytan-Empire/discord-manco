@@ -3,12 +3,11 @@ const fetch = require('node-fetch');
 const express = require('express');
 
 // ⚙️ Configura estos valores:
-const SERVER_IP = "LosManqueados.aternos.me"; // sin puerto
-const SERVER_PORT = "16905"; // puerto
-const CHANNEL_ID = "1470534215140638940"; // canal donde quieres los avisos
+const SERVER_IP = "LosManqueados.aternos.me"; 
+const SERVER_PORT = "16905"; 
+const CHANNEL_ID = "1470534215140638940"; 
 const CHECK_INTERVAL = 30000; // 30 segundos
 
-// Inicializa el cliente de Discord con intents
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -19,7 +18,7 @@ const client = new Client({
   partials: [Partials.Channel]
 });
 
-let lastStatus = null; // Guardamos el estado anterior
+let lastStatus = null;
 
 // Función para consultar el estado del server
 async function checkServer() {
@@ -28,9 +27,9 @@ async function checkServer() {
     const data = await res.json();
     const channel = await client.channels.fetch(CHANNEL_ID);
 
-    if (data.online) {
+    if (data.online === true) {
       // Online con jugadores
-      if (data.players.online > 0 && lastStatus !== "online") {
+      if (data.players && data.players.online > 0 && lastStatus !== "online") {
         channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
         lastStatus = "online";
       }
@@ -47,13 +46,11 @@ async function checkServer() {
   }
 }
 
-// Evento cuando el bot está listo
 client.once('clientReady', () => {
   console.log(`Bot iniciado como ${client.user.tag}`);
   setInterval(checkServer, CHECK_INTERVAL);
 });
 
-// Evento para comandos de texto
 client.on('messageCreate', async message => {
   if (message.content === '!ping') {
     message.reply('Pong!');
@@ -68,16 +65,19 @@ client.on('messageCreate', async message => {
       const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_IP}:${SERVER_PORT}`);
       const data = await res.json();
 
-      if (data.online && data.players.online > 0) {
-        if (data.players.list && data.players.list.length > 0) {
-          message.reply(`👥 Jugadores conectados (${data.players.online}): ${data.players.list.map(p => p.name).join(', ')}`);
+      if (data.online === true) {
+        if (data.players && data.players.online > 0) {
+          if (data.players.list && data.players.list.length > 0) {
+            message.reply(`👥 Jugadores conectados (${data.players.online}): ${data.players.list.map(p => p.name).join(', ')}`);
+          } else {
+            message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
+          }
         } else {
-          message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
+          // Online con 0 jugadores → no responder nada
         }
-      } else if (!data.online) {
+      } else {
         message.reply(`❌ El servidor está apagado.`);
       }
-      // Online con 0 jugadores → no responder nada
     } catch (err) {
       console.error("Error al consultar jugadores:", err);
       message.reply("⚠️ No pude obtener la lista de jugadores.");
@@ -87,7 +87,6 @@ client.on('messageCreate', async message => {
 
 client.login(process.env.TOKEN);
 
-// Servidor web para mantener Railway activo
 const app = express();
 app.get('/', (req, res) => {
   res.send('Bot funcionando 🚀');
