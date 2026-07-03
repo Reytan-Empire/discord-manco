@@ -38,3 +38,14 @@ client.once('ready', () => {
 });
 
 client.login(process.env.TOKEN);
+
+const express = require('express');
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Bot funcionando 🚀');
+});
+
+app.listen(3000, () => {
+  console.log('Servidor web activo en puerto 3000');
+});
