@@ -2,11 +2,10 @@ const { Client, GatewayIntentBits, Partials } = require('discord.js');
 const fetch = require('node-fetch');
 const express = require('express');
 
-// ⚙️ Configura estos valores:
-const SERVER_IP = "LosManqueados.aternos.me"; 
-const SERVER_PORT = "16905"; 
-const CHANNEL_ID = "1470534215140638940"; 
-const CHECK_INTERVAL = 30000; // 30 segundos
+const SERVER_IP = "LosManqueados.aternos.me";
+const SERVER_PORT = "16905";
+const CHANNEL_ID = "1470534215140638940";
+const CHECK_INTERVAL = 30000;
 
 const client = new Client({
   intents: [
@@ -20,7 +19,6 @@ const client = new Client({
 
 let lastStatus = null;
 
-// Función para consultar el estado del server
 async function checkServer() {
   try {
     const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_IP}:${SERVER_PORT}`);
@@ -28,14 +26,12 @@ async function checkServer() {
     const channel = await client.channels.fetch(CHANNEL_ID);
 
     if (data.online === true) {
-      // Online con jugadores
-      if (data.players && data.players.online > 0 && lastStatus !== "online") {
+      if (data.players.online > 0 && lastStatus !== "online") {
         channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
         lastStatus = "online";
       }
       // Online con 0 jugadores → no mandar nada
-    } else if (data.online === false) {
-      // Offline real
+    } else {
       if (lastStatus !== "offline") {
         channel.send("@everyone ❌ El servidor se apagó.");
         lastStatus = "offline";
@@ -65,18 +61,16 @@ client.on('messageCreate', async message => {
       const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_IP}:${SERVER_PORT}`);
       const data = await res.json();
 
-      if (data.online === true) {
-        if (data.players && data.players.online > 0) {
-          if (data.players.list && data.players.list.length > 0) {
-            message.reply(`👥 Jugadores conectados (${data.players.online}): ${data.players.list.map(p => p.name).join(', ')}`);
-          } else {
-            message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
-          }
+      if (data.online === true && data.players.online > 0) {
+        if (data.players.list && data.players.list.length > 0) {
+          message.reply(`👥 Jugadores conectados (${data.players.online}): ${data.players.list.map(p => p.name).join(', ')}`);
+        } else {
+          message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
         }
-        // Online con 0 jugadores → no responder nada
-      } else {
+      } else if (data.online === false) {
         message.reply(`❌ El servidor está apagado.`);
       }
+      // Online con 0 jugadores → no responder nada
     } catch (err) {
       console.error("Error al consultar jugadores:", err);
       message.reply("⚠️ No pude obtener la lista de jugadores.");
