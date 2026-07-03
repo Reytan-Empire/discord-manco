@@ -28,17 +28,20 @@ async function checkServer() {
     const data = await res.json();
     const channel = await client.channels.fetch(CHANNEL_ID);
 
-    // ✅ Avisar solo si está online con jugadores
-    if (data.online && data.players.online > 0 && lastStatus !== "online") {
-      channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
-      lastStatus = "online";
-    } 
-    // ✅ Avisar solo si realmente está apagado
-    else if (!data.online && lastStatus !== "offline") {
-      channel.send("@everyone ❌ El servidor se apagó.");
-      lastStatus = "offline";
+    if (data.online) {
+      // Caso: online con jugadores
+      if (data.players.online > 0 && lastStatus !== "online") {
+        channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
+        lastStatus = "online";
+      }
+      // Caso: online con 0 jugadores → no mandar nada
+    } else {
+      // Caso: realmente apagado
+      if (lastStatus !== "offline") {
+        channel.send("@everyone ❌ El servidor se apagó.");
+        lastStatus = "offline";
+      }
     }
-    // ❌ Si está online con 0 jugadores → no manda nada
   } catch (err) {
     console.error("Error al consultar mcstatus.io:", err);
   }
