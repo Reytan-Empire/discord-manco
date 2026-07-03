@@ -27,14 +27,14 @@ async function checkServer() {
 
     if (data.online && data.players.online > 0) {
       if (lastStatus !== "online") {
-        channel.send(`✅ El servidor está en línea con ${data.players.online} jugadores.`);
+        channel.send(` ✅ El servidor está en línea con ${data.players.online} jugadores.`);
         lastStatus = "online";
       }
     } else if (data.online && data.players.online === 0) {
       // Online con 0 jugadores → no mandar nada
     } else if (!data.online) {
       if (lastStatus !== "offline") {
-        channel.send("❌ El servidor se apagó.");
+        channel.send(" ❌ El servidor se apagó.");
         lastStatus = "offline";
       }
     }
