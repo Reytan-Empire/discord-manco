@@ -19,10 +19,10 @@ async function checkServer() {
         const channel = await client.channels.fetch(CHANNEL_ID);
 
         if (data.online && lastStatus !== "online") {
-            channel.send(`✅ El servidor está en línea con ${data.players.online} jugadores.`);
+            channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
             lastStatus = "online";
         } else if (!data.online && lastStatus !== "offline") {
-            channel.send("❌ El servidor se apagó.");
+            channel.send("@everyone ❌ El servidor se apagó.");
             lastStatus = "offline";
         }
         // Si el estado no cambió, no manda nada
