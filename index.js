@@ -25,13 +25,14 @@ async function checkServer() {
     const data = await res.json();
     const channel = await client.channels.fetch(CHANNEL_ID);
 
-    if (data.online) {
-      if (data.players && data.players.online > 0 && lastStatus !== "online") {
+    if (data.online && data.players.online > 0) {
+      if (lastStatus !== "online") {
         channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
         lastStatus = "online";
       }
+    } else if (data.online && data.players.online === 0) {
       // Online con 0 jugadores → no mandar nada
-    } else {
+    } else if (!data.online) {
       if (lastStatus !== "offline") {
         channel.send("@everyone ❌ El servidor se apagó.");
         lastStatus = "offline";
@@ -61,16 +62,17 @@ client.on('messageCreate', async message => {
       const res = await fetch(`https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`);
       const data = await res.json();
 
-      if (data.online && data.players && data.players.online > 0) {
+      if (data.online && data.players.online > 0) {
         if (data.players.list && data.players.list.length > 0) {
           message.reply(`👥 Jugadores conectados (${data.players.online}): ${data.players.list.join(', ')}`);
         } else {
           message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
         }
+      } else if (data.online && data.players.online === 0) {
+        // Online con 0 jugadores → no responder nada
       } else if (!data.online) {
         message.reply(`❌ El servidor está apagado.`);
       }
-      // Online con 0 jugadores → no responder nada
     } catch (err) {
       console.error("Error al consultar jugadores:", err);
       message.reply("⚠️ No pude obtener la lista de jugadores.");
