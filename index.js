@@ -21,12 +21,12 @@ let lastStatus = null;
 
 async function checkServer() {
   try {
-    const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_IP}:${SERVER_PORT}`);
+    const res = await fetch(`https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`);
     const data = await res.json();
     const channel = await client.channels.fetch(CHANNEL_ID);
 
     if (data.online) {
-      if (data.players.online > 0 && lastStatus !== "online") {
+      if (data.players && data.players.online > 0 && lastStatus !== "online") {
         channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
         lastStatus = "online";
       }
@@ -38,7 +38,7 @@ async function checkServer() {
       }
     }
   } catch (err) {
-    console.error("Error al consultar mcstatus.io:", err);
+    console.error("Error al consultar mcsrvstat.us:", err);
   }
 }
 
@@ -58,12 +58,12 @@ client.on('messageCreate', async message => {
 
   if (message.content === '!players') {
     try {
-      const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SERVER_IP}:${SERVER_PORT}`);
+      const res = await fetch(`https://api.mcsrvstat.us/2/${SERVER_IP}:${SERVER_PORT}`);
       const data = await res.json();
 
-      if (data.online && data.players.online > 0) {
+      if (data.online && data.players && data.players.online > 0) {
         if (data.players.list && data.players.list.length > 0) {
-          message.reply(`👥 Jugadores conectados (${data.players.online}): ${data.players.list.map(p => p.name).join(', ')}`);
+          message.reply(`👥 Jugadores conectados (${data.players.online}): ${data.players.list.join(', ')}`);
         } else {
           message.reply(`👥 El servidor está en línea con ${data.players.online} jugadores.`);
         }
