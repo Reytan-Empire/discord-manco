@@ -29,14 +29,14 @@ async function checkServer() {
     const channel = await client.channels.fetch(CHANNEL_ID);
 
     if (data.online) {
-      // Caso: online con jugadores
+      // Online con jugadores
       if (data.players.online > 0 && lastStatus !== "online") {
         channel.send(`@everyone ✅ El servidor está en línea con ${data.players.online} jugadores.`);
         lastStatus = "online";
       }
-      // Caso: online con 0 jugadores → no mandar nada
+      // Online con 0 jugadores → no mandar nada
     } else {
-      // Caso: realmente apagado
+      // Offline real
       if (lastStatus !== "offline") {
         channel.send("@everyone ❌ El servidor se apagó.");
         lastStatus = "offline";
@@ -77,7 +77,7 @@ client.on('messageCreate', async message => {
       } else if (!data.online) {
         message.reply(`❌ El servidor está apagado.`);
       }
-      // ❌ Si está online con 0 jugadores → no responde nada
+      // Online con 0 jugadores → no responder nada
     } catch (err) {
       console.error("Error al consultar jugadores:", err);
       message.reply("⚠️ No pude obtener la lista de jugadores.");
