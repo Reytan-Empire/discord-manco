@@ -66,5 +66,3 @@ app.get('/', (req, res) => {
 app.listen(3000, () => {
   console.log('Servidor web activo en puerto 3000');
 });
-
-});
