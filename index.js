@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const express = require('express');
 
 // ⚙️ Configura estos valores:
-const SERVER_IP = "LosManqueados.aternos.me:16905"; // IP de tu server
+const SERVER_IP = "LosManqueados.aternos.me"; // IP de tu server
 const SERVER_PORT = "16905"; // Puerto (si aplica)
 const CHANNEL_ID = "1470534215140638940"; // canal donde quieres los avisos
 const CHECK_INTERVAL = 30000; // 30 segundos
