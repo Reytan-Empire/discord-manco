@@ -15,7 +15,7 @@ const SERVER_PORT = 16905;
 const CHANNEL_ID = '1470534215140638940';
 
 // Intervalo de chequeo automático (ms)
-const CHECK_INTERVAL = 30000; // 30s, sube a 45-60s si hay mucho flapping
+const CHECK_INTERVAL = 60000; // 30s, sube a 45-60s si hay mucho flapping
 
 // Umbrales para evitar flapping
 const FAIL_THRESHOLD = 3;     // pings fallidos seguidos para marcar offline
