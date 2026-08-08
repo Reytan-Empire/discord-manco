@@ -15,7 +15,7 @@ const SERVER_PORT = 16905;
 const CHANNEL_ID = '1470534215140638940';
 
 // Intervalo de chequeo automático (ms)
-const CHECK_INTERVAL = 60000; // 30s, sube a 45-60s si hay mucho flapping
+const CHECK_INTERVAL = 30000; // 30s
 
 // Umbrales para evitar flapping
 const FAIL_THRESHOLD = 3;     // pings fallidos seguidos para marcar offline
@@ -86,7 +86,7 @@ async function checkServer() {
       try {
         const channel = await client.channels.fetch(CHANNEL_ID);
         const onlineCount = lastPingData?.players?.online ?? 0;
-        await channel.send(`@everyone ✅ El servidor está en línea (${onlineCount} jugadores).`);
+        await channel.send(`everyone ✅ El servidor está en línea (${onlineCount} jugadores).`);
         console.log('Notificado: servidor ONLINE');
       } catch (e) {
         console.error('checkServer: no pude notificar online:', e);
@@ -99,7 +99,7 @@ async function checkServer() {
       lastPingData = null;
       try {
         const channel = await client.channels.fetch(CHANNEL_ID);
-        await channel.send('@everyone ❌ El servidor se apagó.');
+        await channel.send('everyone ❌ El servidor ya no está en línea.');
         console.log('Notificado: servidor OFFLINE');
       } catch (e) {
         console.error('checkServer: no pude notificar offline:', e);
