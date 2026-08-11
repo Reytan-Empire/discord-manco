@@ -86,7 +86,7 @@ async function checkServer() {
       try {
         const channel = await client.channels.fetch(CHANNEL_ID);
         const onlineCount = lastPingData?.players?.online ?? 0;
-        await channel.send(`everyone ✅ El servidor está en línea (${onlineCount} jugadores).`);
+        await channel.send(`✅ El servidor está en línea (${onlineCount} jugadores).`);
         console.log('Notificado: servidor ONLINE');
       } catch (e) {
         console.error('checkServer: no pude notificar online:', e);
@@ -99,7 +99,7 @@ async function checkServer() {
       lastPingData = null;
       try {
         const channel = await client.channels.fetch(CHANNEL_ID);
-        await channel.send('everyone ❌ El servidor ya no está en línea.');
+        await channel.send('❌ El servidor ya no está en línea.');
         console.log('Notificado: servidor OFFLINE');
       } catch (e) {
         console.error('checkServer: no pude notificar offline:', e);
@@ -116,7 +116,7 @@ async function checkServer() {
       lastPingData = null;
       try {
         const channel = await client.channels.fetch(CHANNEL_ID);
-        await channel.send('@everyone ❌ El servidor se apagó.');
+        await channel.send('❌ El servidor se apagó.');
         console.log('Notificado (catch): servidor OFFLINE');
       } catch (e) {
         console.error('checkServer: no pude notificar offline (catch):', e);
