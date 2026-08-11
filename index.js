@@ -18,8 +18,8 @@ const CHANNEL_ID = '1470534215140638940';
 const CHECK_INTERVAL = 30000; // 30s
 
 // Umbrales para evitar flapping
-const FAIL_THRESHOLD = 3;     // pings fallidos seguidos para marcar offline
-const SUCCESS_THRESHOLD = 2;  // éxitos seguidos para marcar online (sube a 3 si es necesario)
+const FAIL_THRESHOLD = 4;     // pings fallidos seguidos para marcar offline
+const SUCCESS_THRESHOLD = 3;  // éxitos seguidos para marcar online (sube a 3 si es necesario)
 
 // --- Cliente Discord ---
 const client = new Client({
